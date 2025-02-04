@@ -2,6 +2,7 @@
 #include <string.h>
 #include "pico/stdlib.h"
 
+// Declaração dos pinos
 #define BUTTON 5
 #define GREEN_LED 11
 #define BLUE_LED 12
@@ -10,8 +11,10 @@
 #define SEMAFORO_AMARELO 1
 #define SEMAFORO_VERDE 2
 
+// Função para modificar o estado do semáforo
 bool semaforo(struct repeating_timer *timer);
 
+// Variável para armazenar o estado do semáforo
 int estado_semaforo = -1;
 
 int main()
@@ -26,12 +29,15 @@ int main()
     gpio_init(RED_LED);
     gpio_set_dir(RED_LED, GPIO_OUT);
 
+    // Guarda informações do timer, mas não é utilizada no código
     struct repeating_timer timer;
+    // Timer que chama a função semaforo a cada 3 segundos, assim, modificando o estado do semáforo
     add_repeating_timer_ms(3000, semaforo, NULL, &timer);
 
     char estado_texto[30];
 
     while (true) {
+        // Envia um log na saída serial a cada segundo, indicando o estado do semáforo
         sleep_ms(1000);
         switch (estado_semaforo)
         {
@@ -51,12 +57,15 @@ int main()
 
 bool semaforo(struct repeating_timer *timer)
 {
+    // Proximo estado do semáforo
     estado_semaforo++;
+    // Voltar para o estado inicial caso o estado atual seja o ultimo
     if (estado_semaforo > 2)
     {
         estado_semaforo = 0;
     }
     
+    // Aplica a funcionalidade do estado atual
     switch (estado_semaforo)
     {
         case SEMAFORO_VERMELHO:
